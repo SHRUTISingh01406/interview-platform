@@ -2,19 +2,26 @@ import mongoose from "mongoose";
 
 const interviewEventSchema = new mongoose.Schema(
   {
-    title: {
+    // The problem being solved in this session
+    problem: {
       type: String,
       required: true,
     },
-    description: {
+    difficulty: {
       type: String,
-      default: "",
+      required: true,
     },
-    // The user who created/organized the interview
-    organizerId: {
+    // The user who created the session (clerkId)
+    host: {
       type: String,
-      required: true, // Typically matches the clerkId of the organizer
+      required: true,
       index: true,
+    },
+    // The user who joined the session (clerkId)
+    participant: {
+      type: String,
+      index: true,
+      default: null,
     },
     // Stream video call ID generated for this session
     streamCallId: {
@@ -22,19 +29,10 @@ const interviewEventSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    scheduledAt: {
-      type: Date,
-      required: true,
-    },
     status: {
       type: String,
-      enum: ["SCHEDULED", "LIVE", "COMPLETED", "CANCELLED"],
-      default: "SCHEDULED",
-    },
-    participants: {
-      // List of candidate clerkIds allowed to join this interview
-      type: [String],
-      default: [],
+      enum: ["active", "completed"],
+      default: "active",
     },
   },
   { timestamps: true }

@@ -1,16 +1,26 @@
 import express from "express";
 import { requireAuth } from "@clerk/express";
-import { createSession, getMySessions, generateStreamToken } from "../controllers/session.controller.js";
+import {
+  createSession,
+  getActiveSessions,
+  getMyRecentSessions,
+  getSessionById,
+  joinSession,
+  endSession,
+  generateStreamToken,
+} from "../controllers/session.controller.js";
 
 const router = express.Router();
 
-// Generate the video stream token for the user connecting
+// Get the video stream token for the user connecting
 router.get("/video-token", requireAuth(), generateStreamToken);
 
-// Schedule a new session
-router.post("/create", requireAuth(), createSession);
-
-// Fetch upcoming sessions for current user
-router.get("/my-sessions", requireAuth(), getMySessions);
+// Session management
+router.post("/", requireAuth(), createSession);
+router.get("/active", requireAuth(), getActiveSessions);
+router.get("/my-recent", requireAuth(), getMyRecentSessions);
+router.get("/:id", requireAuth(), getSessionById);
+router.post("/:id/join", requireAuth(), joinSession);
+router.post("/:id/end", requireAuth(), endSession);
 
 export default router;
